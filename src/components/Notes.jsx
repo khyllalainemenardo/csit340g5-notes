@@ -19,7 +19,10 @@ function Notes() {
     const saved = localStorage.getItem('notes')
     return saved ? JSON.parse(saved) : startingNotes
   })
-  const [form, setForm] = useState({ title: '', body: '' })
+  const [form, setForm] = useState(() => {
+    const saved = localStorage.getItem('draft')
+    return saved ? JSON.parse(saved) : { title: '', body: '' }
+  })
   const [search, setSearch] = useState('')
   const titleRef = useRef(null)
 
@@ -30,13 +33,11 @@ function Notes() {
   useEffect(() => {
     const id = setTimeout(() => {
       localStorage.setItem('draft', JSON.stringify(form))
-      console.log('draft saved:', form.title)
     }, 1000)
     return () => clearTimeout(id)
   }, [form])
 
- const visibleNotes = useMemo(() => {
-    console.log('filtering')
+  const visibleNotes = useMemo(() => {
     return notes.filter((note) =>
       note.title.toLowerCase().includes(search.toLowerCase())
     )
@@ -53,7 +54,7 @@ function Notes() {
     const body = form.body.trim()
     if (title === '' || body === '') return
     setNotes([...notes, { id: Date.now(), title, body }])
-     setForm({ title: '', body: '' })
+    setForm({ title: '', body: '' })
     titleRef.current.focus()
   }
 
@@ -81,7 +82,7 @@ function Notes() {
         <form className="grid gap-3" onSubmit={handleSubmit}>
           <p className="text-[13px] font-normal tracking-wide text-[#949494]">NEW NOTE</p>
           <input
-          ref={titleRef}
+            ref={titleRef}
             name="title"
             placeholder="Title"
             value={form.title}
