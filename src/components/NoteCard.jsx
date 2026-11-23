@@ -4,7 +4,6 @@ import { SettingsContext } from '../SettingsContext.js'
 function NoteCard({ id, title, body, onDelete }) {
   const [isOpen, setIsOpen] = useState(false)
   const { largeText } = useContext(SettingsContext)
-  console.log('render', title)
 
   return (
     <div>
@@ -28,6 +27,13 @@ function NoteCard({ id, title, body, onDelete }) {
           {body}
         </p>
       )}
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className="mt-3 cursor-pointer text-[15px] font-normal text-[#b83f45] underline"
+      >
+        {isOpen ? 'Show less' : 'Show more'}
+      </button>
       <button
         type="button"
         onClick={() => onDelete(id)}
